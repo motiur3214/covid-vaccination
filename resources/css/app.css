@@ -2,15 +2,47 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-    font-family: 'Figtree', sans-serif;
+
+.buttons {
+    display: flex;
+    gap: 20px;
 }
 
+.search-bar {
+    margin-top: 50px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+table th,
+table td {
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    text-align: left;
+}
+
+table th {
+    background-color: #1f2937;
+    color: white;
+}
+
+table tr:nth-child(even) {
+    background-color: #f9fafb;
+}
+
+table tr:hover {
+    background-color: #f1f5f9;
+}
 .search-bar input {
     border: 1px solid #e2e8f0;
     padding: 10px;
     font-size: 1rem;
     border-radius: 6px;
+    flex-grow: 1; /* Make input field take the available width */
 }
 
 .search-bar button {
@@ -27,20 +59,3 @@ body {
 .search-bar button:hover {
     background-color: #4b5563;
 }
-
-.buttons a {
-    text-decoration: none;
-    color: white;
-    padding: 12px 24px;
-    font-size: 1.1rem;
-    font-weight: 500;
-    background-color: #1f2937;
-    border-radius: 8px;
-    transition: background-color 0.3s ease;
-}
-
-.buttons a:hover {
-    background-color: #4b5563;
-}
-
-

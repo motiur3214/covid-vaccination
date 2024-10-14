@@ -3,10 +3,12 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SearchController;
-
+use App\Http\Controllers\VaccinationCenterController;
 
 Route::get('/', [SearchController::class, 'index'])->name('search');
 
+
+Route::get('/vaccination-centers', [VaccinationCenterController::class, 'index']);
 
 Route::get('/dashboard', function () {
     return view('dashboard');

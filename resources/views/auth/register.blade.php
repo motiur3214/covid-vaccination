@@ -17,6 +17,7 @@
                           autocomplete="username"/>
             <x-input-error :messages="$errors->get('email')" class="mt-2"/>
         </div>
+
         <!-- NID -->
         <div class="mt-4">
             <x-input-label for="nid" :value="__('Nid')"/>
@@ -25,26 +26,38 @@
             <x-input-error :messages="$errors->get('nid')" class="mt-2"/>
         </div>
 
+        <!-- Vaccination Center Dropdown -->
+        <div class="mt-4">
+            <x-input-label for="vaccination_center" :value="__('Vaccination Center')"/>
+            <!-- Search input for vaccination centers -->
+            <input type="text" id="vaccinationCenterSearch" placeholder="Search for a center..."
+                   class="block mt-1 w-full border-gray-300 focus:border-indigo-500
+                   focus:ring-indigo-500 rounded-md shadow-sm" autocomplete="off" style="display: none;">
+            <!-- Dropdown for vaccination centers -->
+            <select id="vaccination_center" name="vaccination_center_id"
+                    class="block mt-1 w-full border-gray-300 focus:border-indigo-500
+                    focus:ring-indigo-500 rounded-md shadow-sm" required>
+                <option value="">{{ __('Select a vaccination center') }}</option>
+            </select>
+            <x-input-error :messages="$errors->get('vaccination_center_id')" class="mt-2"/>
+        </div>
+
         <!-- Password -->
         <div class="mt-4">
             <x-input-label for="password" :value="__('Password')"/>
-
             <x-text-input id="password" class="block mt-1 w-full"
                           type="password"
                           name="password"
                           required autocomplete="new-password"/>
-
             <x-input-error :messages="$errors->get('password')" class="mt-2"/>
         </div>
 
         <!-- Confirm Password -->
         <div class="mt-4">
             <x-input-label for="password_confirmation" :value="__('Confirm Password')"/>
-
             <x-text-input id="password_confirmation" class="block mt-1 w-full"
                           type="password"
                           name="password_confirmation" required autocomplete="new-password"/>
-
             <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2"/>
         </div>
 
@@ -59,4 +72,62 @@
             </x-primary-button>
         </div>
     </form>
+
+    <script>
+        let currentPage = 1; // Track the current page for pagination
+        const perPage = 10; // Items per page
+
+        // Function to load vaccination centers based on the search query
+        function loadVaccinationCenters(query = '', page = 1) {
+            const dropdown = document.getElementById('vaccination_center');
+            dropdown.innerHTML = '<option value="">Loading...</option>'; // Show loading message
+
+            fetch(`/vaccination-centers?query=${encodeURIComponent(query)}&page=${page}`)
+                .then(response => response.json())
+                .then(data => {
+                    dropdown.innerHTML = ''; // Clear previous options
+
+                    // Populate dropdown with fetched data
+                    data.data.forEach(center => {
+                        const option = document.createElement('option');
+                        option.value = center.id;
+                        option.textContent = center.name;
+                        dropdown.appendChild(option);
+                    });
+
+                    // If there are more pages, add "Load More" option
+                    if (data.current_page < data.last_page) {
+                        const loadMoreOption = document.createElement('option');
+                        loadMoreOption.value = 'load_more';
+                        loadMoreOption.textContent = 'Load More...';
+                        dropdown.appendChild(loadMoreOption);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching vaccination centers:', error);
+                    dropdown.innerHTML = '<option value="">Error fetching data</option>'; // Show error message
+                });
+        }
+
+        // Event listener for the search input
+        document.getElementById('vaccinationCenterSearch').addEventListener('input', function() {
+            const query = this.value;
+            currentPage = 1; // Reset to the first page
+            loadVaccinationCenters(query, currentPage); // Load results based on the query
+        });
+
+        // Event listener for dropdown change
+        document.getElementById('vaccination_center').addEventListener('change', function() {
+            if (this.value === 'load_more') {
+                currentPage++; // Increment page number
+                const query = document.getElementById('vaccinationCenterSearch').value; // Get current search query
+                loadVaccinationCenters(query, currentPage); // Load more results
+            }
+        });
+
+        // Load initial vaccination centers when the page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            loadVaccinationCenters(); // Load the first set of data
+        });
+    </script>
 </x-guest-layout>
