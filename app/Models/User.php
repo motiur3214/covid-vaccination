@@ -5,6 +5,7 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Notifications\DatabaseNotificationCollection;
@@ -38,6 +39,9 @@ use Illuminate\Support\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder|User wherePassword($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereRememberToken($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereUpdatedAt($value)
+ * @property int $vaccination_center_id
+ * @property-read \App\Models\VaccinationCenter|null $vaccine_center
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereVaccinationCenterId($value)
  * @mixin \Eloquent
  */
 class User extends Authenticatable
@@ -54,6 +58,7 @@ class User extends Authenticatable
         'name',
         'email',
         'nid',
+        'vaccination_center_id',
         'password',
     ];
 
@@ -78,5 +83,13 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    /**
+     * @return HasOne
+     */
+    public function vaccine_center(): HasOne
+    {
+        return $this->hasOne(VaccinationCenter::class);
     }
 }
