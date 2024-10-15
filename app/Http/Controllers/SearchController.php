@@ -2,23 +2,33 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\SearchService;
 use Illuminate\Http\Request;
 
 class SearchController extends Controller
 {
+    protected SearchService $search_service;
+
+    public function __construct(SearchService $search_service)
+    {
+        $this->search_service = $search_service;
+    }
+
     public function index(Request $request)
     {
         $query = $request->input('query');
+        $data['user'] = null;
+        $data['searched'] = false;
+        $request->validate([
+            'query' => 'nullable|string',
+        ]);
 
-        $results = collect([
-            (object) ['name' => 'John Doe', 'nid' => '123456', 'status' => 'Vaccinated'],
-            (object) ['name' => 'Jane Smith', 'nid' => '654321', 'status' => 'Pending'],
-        ])->filter(function($result) use ($query) {
-            return str_contains(strtolower($result->name), strtolower($query)) ||
-                str_contains($result->nid, $query);
-        });
+        if ($query) {
+            $data['searched'] = true;
+            $data['user'] = $this->search_service->searchUserByNid($query);
+        }
 
-        return view('search', ['results' => $results]);
+        return view('search', compact('data'));
     }
 }
 

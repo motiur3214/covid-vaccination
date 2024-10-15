@@ -5,6 +5,7 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\DatabaseNotification;
@@ -42,6 +43,7 @@ use Illuminate\Support\Carbon;
  * @property int $vaccination_center_id
  * @property-read \App\Models\VaccinationCenter|null $vaccine_center
  * @method static \Illuminate\Database\Eloquent\Builder|User whereVaccinationCenterId($value)
+ * @property-read \App\Models\VaccineSchedule|null $schedule
  * @mixin \Eloquent
  */
 class User extends Authenticatable
@@ -86,10 +88,37 @@ class User extends Authenticatable
     }
 
     /**
+     * @return BelongsTo
+     */
+    public function vaccine_center(): BelongsTo
+    {
+        return $this->belongsTo(VaccinationCenter::class, 'vaccination_center_id');
+    }
+
+    /**
      * @return HasOne
      */
-    public function vaccine_center(): HasOne
+    public function schedule(): HasOne
     {
-        return $this->hasOne(VaccinationCenter::class);
+
+        return $this->hasOne(VaccineSchedule::class);
+    }
+
+    public function getVaccinationStatusAttribute(): string
+    {
+
+        $schedule = $this->schedule;
+
+        if (!$schedule) {
+            return 'Not scheduled';
+        }
+
+        $scheduled_date = Carbon::parse($schedule->date);
+
+        if ($scheduled_date->isPast() || $scheduled_date->isToday()) {
+            return 'Vaccinated';
+        } else {
+            return 'Scheduled on ' . $scheduled_date->format('Y-m-d');
+        }
     }
 }

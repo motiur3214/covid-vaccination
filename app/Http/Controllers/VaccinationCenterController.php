@@ -2,26 +2,27 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\VaccinationCenter;
+use App\Services\VaccinationCenterService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class VaccinationCenterController extends Controller
 {
+    protected VaccinationCenterService $vaccination_center_service;
+
+    public function __construct(VaccinationCenterService $vaccination_center_service)
+    {
+        $this->vaccination_center_service = $vaccination_center_service;
+    }
     public function index(Request $request): JsonResponse
     {
-        $searchTerm = $request->input('query');
+        $search_term = $request->input('query');
         $perPage = 10;
 
-        if (!$searchTerm) {
-            $vaccinationCenters = VaccinationCenter::paginate($perPage);
-            return response()->json($vaccinationCenters);
-        }
+        $vaccination_centers = $this->vaccination_center_service->getVaccinationCenters($perPage, $search_term);
 
-        $vaccinationCenters = VaccinationCenter::where('name', 'like', "%{$searchTerm}%")
-            ->paginate($perPage);
+        return response()->json($vaccination_centers);
 
-        return response()->json($vaccinationCenters);
     }
 
 }

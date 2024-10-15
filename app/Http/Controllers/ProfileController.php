@@ -3,14 +3,21 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileUpdateRequest;
+use App\Services\ProfileService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
 
 class ProfileController extends Controller
 {
+    protected ProfileService $profile_service;
+
+    public function __construct(ProfileService $profile_service)
+    {
+        $this->profile_service = $profile_service;
+    }
+
     /**
      * Display the user's profile form.
      */
@@ -26,13 +33,7 @@ class ProfileController extends Controller
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
-        $request->user()->fill($request->validated());
-
-        if ($request->user()->isDirty('email')) {
-            $request->user()->email_verified_at = null;
-        }
-
-        $request->user()->save();
+        $this->profile_service->updateUserProfile($request->user(), $request->validated());
 
         return Redirect::route('profile.edit')->with('status', 'profile-updated');
     }
@@ -46,15 +47,8 @@ class ProfileController extends Controller
             'password' => ['required', 'current_password'],
         ]);
 
-        $user = $request->user();
-
-        Auth::logout();
-
-        $user->delete();
-
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
-
+        $this->profile_service->deleteUserAccount($request->user());
         return Redirect::to('/');
     }
 }
+
