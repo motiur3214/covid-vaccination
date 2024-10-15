@@ -74,20 +74,23 @@
     </form>
 
     <script>
-        let currentPage = 1; // Track the current page for pagination
-        const perPage = 10; // Items per page
+        let currentPage = 1;
+        const perPage = 10;
 
-        // Function to load vaccination centers based on the search query
+
         function loadVaccinationCenters(query = '', page = 1) {
             const dropdown = document.getElementById('vaccination_center');
-            dropdown.innerHTML = '<option value="">Loading...</option>'; // Show loading message
+            dropdown.innerHTML = ''; // Clear the dropdown
+
+            // Add the static "Select a vaccination center" option
+            const defaultOption = document.createElement('option');
+            defaultOption.value = '';
+            defaultOption.textContent = 'Select a vaccination center';
+            dropdown.appendChild(defaultOption);
 
             fetch(`/vaccination-centers?query=${encodeURIComponent(query)}&page=${page}`)
                 .then(response => response.json())
                 .then(data => {
-                    dropdown.innerHTML = ''; // Clear previous options
-
-                    // Populate dropdown with fetched data
                     data.data.forEach(center => {
                         const option = document.createElement('option');
                         option.value = center.id;
@@ -95,7 +98,6 @@
                         dropdown.appendChild(option);
                     });
 
-                    // If there are more pages, add "Load More" option
                     if (data.current_page < data.last_page) {
                         const loadMoreOption = document.createElement('option');
                         loadMoreOption.value = 'load_more';
@@ -105,29 +107,27 @@
                 })
                 .catch(error => {
                     console.error('Error fetching vaccination centers:', error);
-                    dropdown.innerHTML = '<option value="">Error fetching data</option>'; // Show error message
+                    dropdown.innerHTML = '<option value="">Error fetching data</option>';
                 });
         }
 
-        // Event listener for the search input
+
         document.getElementById('vaccinationCenterSearch').addEventListener('input', function() {
             const query = this.value;
-            currentPage = 1; // Reset to the first page
-            loadVaccinationCenters(query, currentPage); // Load results based on the query
+            currentPage = 1;
+            loadVaccinationCenters(query, currentPage);
         });
 
-        // Event listener for dropdown change
         document.getElementById('vaccination_center').addEventListener('change', function() {
             if (this.value === 'load_more') {
-                currentPage++; // Increment page number
+                currentPage++;
                 const query = document.getElementById('vaccinationCenterSearch').value; // Get current search query
                 loadVaccinationCenters(query, currentPage); // Load more results
             }
         });
 
-        // Load initial vaccination centers when the page loads
         document.addEventListener('DOMContentLoaded', function() {
-            loadVaccinationCenters(); // Load the first set of data
-        });
+            loadVaccinationCenters();
+        });;
     </script>
 </x-guest-layout>
