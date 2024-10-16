@@ -1,8 +1,26 @@
 <?php
 
-use Illuminate\Foundation\Inspiring;
-use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Schedule;
 
-Artisan::command('inspire', function () {
-    $this->comment(Inspiring::quote());
-})->purpose('Display an inspiring quote')->hourly();
+use App\Jobs\SendVaccinationReminderJob;
+use App\Models\VaccineSchedule;
+use Carbon\Carbon;
+
+Schedule::call(function () {
+
+    $tomorrow = Carbon::now()->addDay();
+    $users = VaccineSchedule::with('user')
+        ->whereDate('schedule_date', $tomorrow)
+        ->get()
+        ->pluck('user');
+
+    foreach ($users as $user) {
+        dispatch(new SendVaccinationReminderJob($user, $tomorrow));
+        \Log::info('Job executed for user: ' . json_encode($users));
+    }
+
+})->dailyAt('01:26');
+//})->everyMinute();
+
+
+

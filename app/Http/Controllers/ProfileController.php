@@ -33,9 +33,14 @@ class ProfileController extends Controller
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
-        $this->profile_service->updateUserProfile($request->user(), $request->validated());
+        try {
+            $this->profile_service->updateUserProfile($request->user(), $request->validated());
+            return Redirect::route('profile.edit')->with('status', 'profile-updated');
+        } catch (\Exception $exception) {
+            \Log::info('Job executed for user: ' . json_encode($exception->getMessage()));
 
-        return Redirect::route('profile.edit')->with('status', 'profile-updated');
+        }
+        return Redirect::route('profile.edit')->with('status', 'Something went wrong');
     }
 
     /**
@@ -43,11 +48,16 @@ class ProfileController extends Controller
      */
     public function destroy(Request $request): RedirectResponse
     {
-        $request->validateWithBag('userDeletion', [
-            'password' => ['required', 'current_password'],
-        ]);
+        try {
+            $request->validateWithBag('userDeletion', [
+                'password' => ['required', 'current_password'],
+            ]);
 
-        $this->profile_service->deleteUserAccount($request->user());
+            $this->profile_service->deleteUserAccount($request->user());
+        } catch (\Exception $exception) {
+            \Log::info('Job executed for user: ' . json_encode($exception->getMessage()));
+        }
+
         return Redirect::to('/');
     }
 }

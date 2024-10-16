@@ -16,18 +16,21 @@ class SearchController extends Controller
 
     public function index(Request $request)
     {
-        $query = $request->input('query');
         $data['user'] = null;
         $data['searched'] = false;
-        $request->validate([
-            'query' => 'nullable|string',
-        ]);
+        try {
+            $query = $request->input('query');
+            $request->validate([
+                'query' => 'nullable|string',
+            ]);
 
-        if ($query) {
-            $data['searched'] = true;
-            $data['user'] = $this->search_service->searchUserByNid($query);
+            if ($query) {
+                $data['searched'] = true;
+                $data['user'] = $this->search_service->searchUserByNid($query);
+            }
+        } catch (\Exception $exception) {
+            \Log::info('Job executed for user: ' . json_encode($exception->getMessage()));
         }
-
         return view('search', compact('data'));
     }
 }
