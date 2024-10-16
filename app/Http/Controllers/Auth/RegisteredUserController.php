@@ -31,8 +31,11 @@ class RegisteredUserController extends Controller
      */
     public function store(RegisterRequest $request): RedirectResponse
     {
-        $this->user_service->registerUser($request->validated());
-
+        try {
+            $this->user_service->registerUser($request->validated());
+        } catch (\Exception $exception) {
+            \Log::info('Job executed for user: ' . json_encode($exception->getMessage()));
+        }
         return redirect(route('dashboard', absolute: false));
     }
 }

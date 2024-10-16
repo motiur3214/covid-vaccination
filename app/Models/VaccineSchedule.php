@@ -34,6 +34,12 @@ class VaccineSchedule extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'user_id',
+        'vaccination_center_id',
+        'schedule_date',
+    ];
+
     /**
      * @return BelongsTo
      */

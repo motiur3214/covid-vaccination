@@ -27,10 +27,18 @@ class ScheduleController extends controller
             ]);
 
             $vaccination_center_Id = auth()->user()->vaccination_center_id;
-            $this->schedule_service->scheduleVaccine(auth()->user()->id, $vaccination_center_Id, $request->schedule_date, $request->daily_limit);
 
-        } catch (\Exception $e) {
-            return redirect()->back()->withErrors(['registration' => $e->getMessage()]);
+            $this->schedule_service->scheduleVaccine
+            (
+                auth()->user()->id,
+                $vaccination_center_Id,
+                $request->schedule_date,
+                $request->daily_limit
+            );
+
+        } catch (\Exception $exception) {
+            \Log::info('Job executed for user: ' . json_encode($exception->getMessage()));
+            return redirect()->back()->withErrors(['registration' => $exception->getMessage()]);
         }
 
         return redirect('dashboard');

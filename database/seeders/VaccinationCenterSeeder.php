@@ -28,8 +28,20 @@ class VaccinationCenterSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'name' => 'Dhanmondi Community Clinic',
+                'name' => 'Mohakhali vaccination Clinic',
+                'daily_limit' => 5,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'name' => 'Jatrabari Clinic',
                 'daily_limit' => 10,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'name' => 'Dhanmondi Clinic',
+                'daily_limit' => 15,
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
