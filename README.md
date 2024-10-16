@@ -25,6 +25,11 @@
 - get a schedule for vaccination 
 - search with nid
 
+## Routes
+- '/' is for search with nid
+- '/dashboard' is after login 
+- ''
+ 
 ## Implementation 
 - every requirement is fulfilled 
 - layered architecture with clear separations between different concerns
@@ -34,3 +39,4 @@
 - route cache for serving request faster
 
 - If i had more time i would like to do test cases
+

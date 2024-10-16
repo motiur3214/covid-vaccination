@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<x-app-layout>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
     <meta charset="utf-8">
@@ -67,3 +68,4 @@
 
 </body>
 </html>
+    </x-app-layout>

@@ -15,7 +15,22 @@
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
+
+                    <!-- Search Link -->
+                    <x-nav-link :href="route('search')" :active="request()->routeIs('search')">
+                        {{ __('Search') }}
+                    </x-nav-link>
                 </div>
+            </div>
+
+            <!-- Search Form -->
+            <div class="hidden sm:flex items-center">
+                <form action="{{ route('search') }}" method="GET" class="flex items-center">
+                    <input type="text" name="query" placeholder="Search..." class="border border-gray-300 rounded-md p-2" />
+                    <button type="submit" class="ml-2 bg-blue-500 text-white px-4 py-2 rounded-md">
+                        Search
+                    </button>
+                </form>
             </div>
 
             <!-- Settings Dropdown -->
@@ -43,7 +58,7 @@
                             @csrf
 
                             <x-dropdown-link :href="route('logout')"
-                                    onclick="event.preventDefault();
+                                             onclick="event.preventDefault();
                                                 this.closest('form').submit();">
                                 {{ __('Log Out') }}
                             </x-dropdown-link>
@@ -89,7 +104,7 @@
                     @csrf
 
                     <x-responsive-nav-link :href="route('logout')"
-                            onclick="event.preventDefault();
+                                           onclick="event.preventDefault();
                                         this.closest('form').submit();">
                         {{ __('Log Out') }}
                     </x-responsive-nav-link>
