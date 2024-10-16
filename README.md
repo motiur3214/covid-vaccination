@@ -9,10 +9,9 @@
 - change .env-example to .env
 - give DB credential on env
 - give mail trap username and password on env
-- php artisan storage:link
 - php artisan serve
 - npm run dev
-- create database covid_vaccination
+- create on mySQL database covid_vaccination
 - php artisan migrate
 - php artisan db:seed
 - php artisan queue:work 
