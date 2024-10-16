@@ -27,8 +27,7 @@
 
 ## Routes
 - '/' is for search with nid
-- '/dashboard' is after login 
-- ''
+- '/dashboard' is after login
  
 ## Implementation 
 - every requirement is fulfilled 
