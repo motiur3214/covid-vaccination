@@ -3,7 +3,7 @@
 ## Requirements
 
 - PHP 8.2 >=
-- Laravel 12
+- Laravel 11
 - composer install
 - npm install
 - change .env-example to .env
@@ -27,9 +27,12 @@
 
 ## Routes
 - '/' is for search with nid
+- /registration'
 - '/dashboard' is after login
+- '/register' is user registration
  
 ## Implementation 
+- laravel default auth ui is used
 - every requirement is fulfilled 
 - layered architecture with clear separations between different concerns
 - used queue and scheduler for mail
